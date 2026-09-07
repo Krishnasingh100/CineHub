@@ -1,0 +1,5 @@
+import bcrypt from "bcryptjs";
+import { db } from "@/lib/db";
+import { createSession } from "@/lib/auth";
+import { ensureIndexes } from "@/lib/models";
+export async function POST(request: Request) { const body = await request.json().catch(() => null) as { name?: string; email?: string; password?: string } | null; const name = body?.name?.trim(); const email = body?.email?.trim().toLowerCase(); const password = body?.password; if (!name || name.length > 60 || !email || !/^\S+@\S+\.\S+$/.test(email) || !password || password.length < 8) return Response.json({ error: "Enter a name, valid email, and password of at least 8 characters." }, { status: 400 }); try { await ensureIndexes(); const user = await (await db()).collection("users").insertOne({ name, email, passwordHash: await bcrypt.hash(password, 12), createdAt: new Date() }); await createSession(user.insertedId); return Response.json({ ok: true }, { status: 201 }); } catch (error) { if ((error as { code?: number }).code === 11000) return Response.json({ error: "An account with that email already exists." }, { status: 409 }); throw error; } }
