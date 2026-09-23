@@ -1,9 +1,9 @@
-const express = require("express");
-const { ObjectId } = require("mongodb");
-const { db, ensureIndexes } = require("../config/db");
-const { requireUser, getUserFromRequest } = require("../middleware/auth");
-const { asyncHandler } = require("../utils/asyncHandler");
-const tmdb = require("../utils/tmdb");
+import express from "express";
+import { ObjectId } from "mongodb";
+import { db, ensureIndexes } from "../config/db.js";
+import { requireUser, getUserFromRequest } from "../middleware/auth.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import tmdb from "../utils/movies.js";
 
 const router = express.Router();
 const CATEGORIES = new Set(["popular", "now_playing", "upcoming", "top_rated"]);
@@ -90,10 +90,10 @@ router.get(
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const page = validPage(req.query.page);
-    if (!/^\d+$/.test(id) || !page) return res.status(400).json({ error: "Invalid request." });
+    if (!id || !page) return res.status(400).json({ error: "Invalid request." });
     try {
       const [results, genres] = await Promise.all([tmdb.getByGenre(id, page), tmdb.getGenres()]);
-      const name = genres.find((g) => g.id === Number(id))?.name || "Genre";
+      const name = genres.find((g) => g.id === id)?.name || "Genre";
       res.json({ ...results, genreName: name });
     } catch {
       res.status(502).json({ error: "Unable to load movies." });
@@ -106,8 +106,8 @@ router.get(
   "/:id",
   asyncHandler(async (req, res) => {
     const { id } = req.params;
-    if (!/^\d+$/.test(id)) return res.status(400).json({ error: "Invalid movie." });
-    const movieId = Number(id);
+    if (!/^(tt\d+|\d+)$/.test(id)) return res.status(400).json({ error: "Invalid movie." });
+    const movieId = id;
     let movie;
     try {
       movie = await tmdb.getMovie(id);
@@ -146,9 +146,9 @@ router.put(
   "/:id/rating",
   requireUser,
   asyncHandler(async (req, res) => {
-    const movieId = Number(req.params.id);
+    const movieId = req.params.id;
     const value = req.body?.value;
-    if (!Number.isSafeInteger(movieId) || typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 10) {
+    if (!/^(tt\d+|\d+)$/.test(movieId) || typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 10) {
       return res.status(400).json({ error: "Rating must be an integer from 1 to 10." });
     }
     await ensureIndexes();
@@ -162,4 +162,4 @@ router.put(
   })
 );
 
-module.exports = router;
+export default router;

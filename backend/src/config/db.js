@@ -1,4 +1,4 @@
-const { MongoClient } = require("mongodb");
+import { MongoClient } from "mongodb";
 
 let clientPromise;
 function getClient() {
@@ -11,16 +11,17 @@ function getClient() {
   return clientPromise;
 }
 
-async function db() {
+export async function db() {
   const client = await getClient();
   return client.db();
 }
 
 let indexesReady;
-function ensureIndexes() {
+export function ensureIndexes() {
   if (!indexesReady) {
     indexesReady = (async () => {
-      const database = await db();      await Promise.all([
+      const database = await db();
+      await Promise.all([
         database.collection("users").createIndex({ email: 1 }, { unique: true }),
         database.collection("ratings").createIndex({ userId: 1, movieId: 1 }, { unique: true }),
         database.collection("reviews").createIndex({ movieId: 1, createdAt: -1 }),
@@ -34,5 +35,3 @@ function ensureIndexes() {
     throw err;
   });
 }
-
-module.exports = { db, ensureIndexes };

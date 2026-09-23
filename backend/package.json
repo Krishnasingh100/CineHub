@@ -2,11 +2,13 @@
   "name": "cinehub-backend",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "CineHub Express API for Render",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "check": "node check-env.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

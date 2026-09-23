@@ -1,7 +1,7 @@
-const IMAGE = "https://image.tmdb.org/t/p";
-
-export function imageUrl(path, size = "w500") {
-  return path ? `${IMAGE}/${size}${path}` : null;
+// OMDB returns full image URLs (or null). Pass them through untouched.
+export function imageUrl(path) {
+  if (!path || path === "N/A") return null;
+  return path;
 }
-export const posterUrl = (path) => imageUrl(path, "w500");
-export const backdropUrl = (path) => imageUrl(path, "original");
+export const posterUrl = (path) => imageUrl(path);
+export const backdropUrl = (path) => imageUrl(path);

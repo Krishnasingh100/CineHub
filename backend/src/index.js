@@ -1,6 +1,6 @@
-require("dotenv").config();
-const { createApp } = require("./app");
-const { ensureIndexes } = require("./config/db");
+import "dotenv/config";
+import { createApp } from "./app.js";
+import { ensureIndexes } from "./config/db.js";
 
 const PORT = Number(process.env.PORT || 5000);
 const app = createApp();

@@ -1,13 +1,13 @@
-const express = require("express");
-const { ObjectId } = require("mongodb");
-const { db } = require("../config/db");
-const { requireUser } = require("../middleware/auth");
-const { asyncHandler } = require("../utils/asyncHandler");
-const tmdb = require("../utils/tmdb");
+import express from "express";
+import { ObjectId } from "mongodb";
+import { db } from "../config/db.js";
+import { requireUser } from "../middleware/auth.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import tmdb from "../utils/movies.js";
 
 const router = express.Router();
 
-// GET /api/profile — counts + recent ratings with movie posters (replaces Next.js profile page SSR)
+// GET /api/profile — counts + recent ratings with movie posters
 router.get(
   "/",
   requireUser,
@@ -34,4 +34,4 @@ router.get(
   })
 );
 
-module.exports = router;
+export default router;

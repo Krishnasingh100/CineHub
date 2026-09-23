@@ -1,15 +1,14 @@
-const express = require("express");
-const { ObjectId } = require("mongodb");
-const { db, ensureIndexes } = require("../config/db");
-const { requireUser, getUserFromRequest } = require("../middleware/auth");
-const { asyncHandler } = require("../utils/asyncHandler");
-const tmdb = require("../utils/tmdb");
+import express from "express";
+import { ObjectId } from "mongodb";
+import { db, ensureIndexes } from "../config/db.js";
+import { requireUser, getUserFromRequest } from "../middleware/auth.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import tmdb from "../utils/movies.js";
 
 const router = express.Router();
 
 function validMovieId(value) {
-  const n = Number(value);
-  return Number.isSafeInteger(n) && n > 0 ? n : null;
+  return typeof value === "string" && /^(tt\d+|\d+)$/.test(value) ? value : null;
 }
 
 // GET /api/watchlist — full movie objects for the logged-in user
@@ -76,4 +75,4 @@ router.delete(
   })
 );
 
-module.exports = router;
+export default router;

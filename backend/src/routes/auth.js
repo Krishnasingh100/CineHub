@@ -1,8 +1,8 @@
-const express = require("express");
-const bcrypt = require("bcryptjs");
-const { db, ensureIndexes } = require("../config/db");
-const { signToken, requireUser } = require("../middleware/auth");
-const { asyncHandler } = require("../utils/asyncHandler");
+import express from "express";
+import bcrypt from "bcryptjs";
+import { db, ensureIndexes } from "../config/db.js";
+import { signToken, requireUser } from "../middleware/auth.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const router = express.Router();
 
@@ -63,4 +63,4 @@ router.get(
   asyncHandler(async (req, res) => res.json({ user: req.user }))
 );
 
-module.exports = router;
+export default router;

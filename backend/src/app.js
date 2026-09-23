@@ -1,16 +1,16 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const rateLimit = require("express-rate-limit");
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
-const authRoutes = require("./routes/auth");
-const movieRoutes = require("./routes/movies");
-const watchlistRoutes = require("./routes/watchlist");
-const profileRoutes = require("./routes/profile");
-const { errorHandler, notFound } = require("./middleware/error");
+import authRoutes from "./routes/auth.js";
+import movieRoutes from "./routes/movies.js";
+import watchlistRoutes from "./routes/watchlist.js";
+import profileRoutes from "./routes/profile.js";
+import { errorHandler, notFound } from "./middleware/error.js";
 
-function createApp() {
+export function createApp() {
   const app = express();
   app.disable("x-powered-by");
   app.set("trust proxy", 1);
@@ -43,5 +43,3 @@ function createApp() {
   app.use(errorHandler);
   return app;
 }
-
-module.exports = { createApp };

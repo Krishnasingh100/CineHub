@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
-const { ObjectId } = require("mongodb");
-const { db } = require("../config/db");
+import jwt from "jsonwebtoken";
+import { ObjectId } from "mongodb";
+import { db } from "../config/db.js";
 
 const TOKEN_DAYS = 30;
 
@@ -12,7 +12,7 @@ function secret() {
 
 // Login/signup return this token. The client stores it (localStorage)
 // and sends it back as: Authorization: Bearer <token>
-function signToken(userId) {
+export function signToken(userId) {
   return jwt.sign({ sub: String(userId) }, secret(), { expiresIn: `${TOKEN_DAYS}d` });
 }
 
@@ -38,13 +38,13 @@ async function userFromToken(token) {
   return { id: user._id.toHexString(), name: user.name, email: user.email };
 }
 
-async function getUserFromRequest(req) {
+export async function getUserFromRequest(req) {
   const token = tokenFromRequest(req);
   if (!token) return null;
   return userFromToken(token).catch(() => null);
 }
 
-function requireUser(req, res, next) {
+export function requireUser(req, res, next) {
   getUserFromRequest(req)
     .then((user) => {
       if (!user) return res.status(401).json({ error: "Authentication required." });
@@ -53,5 +53,3 @@ function requireUser(req, res, next) {
     })
     .catch(next);
 }
-
-module.exports = { signToken, getUserFromRequest, requireUser };

@@ -1,3 +1,6 @@
+# Render Blueprint for CineHub backend.
+# Deploy: Render Dashboard -> New -> Blueprint -> select this repo.
+# Then set the `sync: false` vars below in the dashboard (never commit secrets).
 services:
   - type: web
     name: cinehub-api
@@ -10,11 +13,15 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      # Vercel frontend URL, e.g. https://cinehub.vercel.app
       - key: CLIENT_URL
         sync: false
+      # MongoDB Atlas URI, e.g. mongodb+srv://user:pass@cluster/cinehub?retryWrites=true&w=majority
       - key: MONGODB_URI
         sync: false
-      - key: TMDB_API_KEY
+      # OMDb key, e.g. 550f9af7
+      - key: OMDB_API_KEY
         sync: false
+      # Auto-generated once; keep it on redeploys
       - key: JWT_SECRET
         generateValue: true
