@@ -19,7 +19,10 @@ export function createApp() {
   app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
   app.use(express.json({ limit: "100kb" }));
 
-  const clientUrl = (process.env.CLIENT_URL || "http://localhost:5173").split(",").map((s) => s.trim()).filter(Boolean);
+  const clientUrl = (process.env.CLIENT_URL || "http://localhost:5173")
+    .split(",")
+    .map((s) => s.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
   // No cookies used — the client sends Authorization: Bearer <token>, so no credentials flag needed.
   app.use(
     cors({
