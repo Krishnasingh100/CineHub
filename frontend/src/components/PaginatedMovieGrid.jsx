@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MovieGrid } from "./MovieGrid";
+import { api } from "../lib/api";
 
 export function PaginatedMovieGrid({ initialMovies, initialPage, totalPages, endpoint }) {
   const [movies, setMovies] = useState(initialMovies);
@@ -12,10 +13,7 @@ export function PaginatedMovieGrid({ initialMovies, initialPage, totalPages, end
     setLoading(true);
     setError("");
     try {
-      const base = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
-      const res = await fetch(`${base}${endpoint}?page=${page + 1}`, { credentials: "include" });
-      if (!res.ok) throw new Error("Unable to load more movies.");
-      const data = await res.json();
+      const data = await api.get(`${endpoint}?page=${page + 1}`);
       setMovies((current) => [
         ...current,
         ...data.results.filter((m) => !current.some((x) => x.id === m.id)),

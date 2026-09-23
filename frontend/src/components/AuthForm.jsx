@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../lib/api";
+import { api, saveAuth } from "../lib/api";
 import { useAuth } from "../context/AuthContext";
 
 export function AuthForm({ mode }) {
@@ -16,7 +16,8 @@ export function AuthForm({ mode }) {
     const form = new FormData(e.currentTarget);
     const payload = Object.fromEntries(form);
     try {
-      await api.post(`/api/auth/${mode}`, payload);
+      const data = await api.post(`/api/auth/${mode}`, payload);
+      saveAuth(data); // stores token + user for future requests
       await refresh();
       navigate("/");
     } catch (err) {

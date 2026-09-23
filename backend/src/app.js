@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 
 const authRoutes = require("./routes/auth");
@@ -19,13 +18,12 @@ function createApp() {
   app.use(helmet());
   app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
   app.use(express.json({ limit: "100kb" }));
-  app.use(cookieParser());
 
   const clientUrl = (process.env.CLIENT_URL || "http://localhost:5173").split(",").map((s) => s.trim()).filter(Boolean);
+  // No cookies used — the client sends Authorization: Bearer <token>, so no credentials flag needed.
   app.use(
     cors({
       origin: clientUrl.length === 1 ? clientUrl[0] : clientUrl,
-      credentials: true,
     })
   );
 

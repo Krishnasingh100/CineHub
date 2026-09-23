@@ -1,10 +1,14 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const { db, ensureIndexes } = require("../config/db");
-const { createSession, destroySession, getUserFromRequest } = require("../middleware/auth");
+const { signToken, requireUser } = require("../middleware/auth");
 const { asyncHandler } = require("../utils/asyncHandler");
 
 const router = express.Router();
+
+function publicUser(user) {
+  return { id: user._id.toHexString(), name: user.name, email: user.email };
+}
 
 router.post(
   "/register",
@@ -23,8 +27,8 @@ router.post(
         passwordHash: await bcrypt.hash(password, 12),
         createdAt: new Date(),
       });
-      await createSession(res, result.insertedId);
-      return res.status(201).json({ ok: true });
+      const user = { _id: result.insertedId, name, email };
+      return res.status(201).json({ ok: true, token: signToken(user._id), user: publicUser(user) });
     } catch (err) {
       if (err?.code === 11000) {
         return res.status(409).json({ error: "An account with that email already exists." });
@@ -46,26 +50,17 @@ router.post(
     if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
       return res.status(401).json({ error: "Invalid email or password." });
     }
-    await createSession(res, user._id);
-    return res.json({ ok: true });
+    return res.json({ ok: true, token: signToken(user._id), user: publicUser(user) });
   })
 );
 
-router.post(
-  "/logout",
-  asyncHandler(async (req, res) => {
-    await destroySession(req, res);
-    return res.json({ ok: true });
-  })
-);
+// Logout is client-side (the app just deletes the stored token).
+router.post("/logout", (req, res) => res.json({ ok: true }));
 
 router.get(
   "/me",
-  asyncHandler(async (req, res) => {
-    const user = await getUserFromRequest(req);
-    if (!user) return res.status(401).json({ error: "Authentication required." });
-    return res.json({ user });
-  })
+  requireUser,
+  asyncHandler(async (req, res) => res.json({ user: req.user }))
 );
 
 module.exports = router;

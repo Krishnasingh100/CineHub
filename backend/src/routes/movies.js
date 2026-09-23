@@ -1,7 +1,7 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const { db, ensureIndexes } = require("../config/db");
-const { requireUser } = require("../middleware/auth");
+const { requireUser, getUserFromRequest } = require("../middleware/auth");
 const { asyncHandler } = require("../utils/asyncHandler");
 const tmdb = require("../utils/tmdb");
 
@@ -114,7 +114,6 @@ router.get(
     } catch {
       return res.status(404).json({ error: "Movie not found." });
     }
-    const { getUserFromRequest } = require("../middleware/auth");
     const user = await getUserFromRequest(req).catch(() => null);
     const database = await db();
     const [providers, state, community] = await Promise.all([

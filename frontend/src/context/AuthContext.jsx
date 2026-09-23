@@ -1,17 +1,23 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { api } from "../lib/api";
+import { api, storedUser, clearAuth, getToken } from "../lib/api";
 
-const AuthContext = createContext({ user: null, loading: true, refresh: async () => {}, logout: async () => {} });
+const AuthContext = createContext({ user: null, loading: true, refresh: async () => {}, logout: () => {} });
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => storedUser());
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
+    if (!getToken()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     try {
       const data = await api.get("/api/auth/me");
       setUser(data.user);
     } catch {
+      clearAuth();
       setUser(null);
     } finally {
       setLoading(false);
@@ -22,12 +28,9 @@ export function AuthProvider({ children }) {
     refresh();
   }, [refresh]);
 
-  const logout = useCallback(async () => {
-    try {
-      await api.post("/api/auth/logout");
-    } catch {
-      // ignore
-    }
+  // Logout is client-side: just delete the stored token.
+  const logout = useCallback(() => {
+    clearAuth();
     setUser(null);
   }, []);
 

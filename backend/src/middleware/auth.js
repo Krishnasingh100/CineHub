@@ -1,47 +1,47 @@
-const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const { ObjectId } = require("mongodb");
 const { db } = require("../config/db");
 
-const COOKIE = "cinehub_session";
-const SESSION_DAYS = 30;
+const TOKEN_DAYS = 30;
 
-function cookieOptions() {
-  const isProd = process.env.NODE_ENV === "production";
-  return {
-    httpOnly: true,
-    secure: isProd, // Render + Vercel are HTTPS in prod
-    sameSite: isProd ? "none" : "lax", // cross-site (Vercel -> Render) needs none
-    maxAge: SESSION_DAYS * 24 * 60 * 60 * 1000,
-    path: "/",
-  };
+function secret() {
+  const value = process.env.JWT_SECRET;
+  if (!value) throw new Error("JWT_SECRET is not configured");
+  return value;
 }
 
-async function createSession(res, userId) {
-  const token = crypto.randomBytes(32).toString("hex");
-  const expiresAt = new Date(Date.now() + SESSION_DAYS * 86_400_000);
-  const database = await db();
-  await database.collection("sessions").insertOne({
-    userId: new ObjectId(userId),
-    token,
-    expiresAt,
-    createdAt: new Date(),
-  });
-  res.cookie(COOKIE, token, cookieOptions());
+// Login/signup return this token. The client stores it (localStorage)
+// and sends it back as: Authorization: Bearer <token>
+function signToken(userId) {
+  return jwt.sign({ sub: String(userId) }, secret(), { expiresIn: `${TOKEN_DAYS}d` });
+}
+
+function tokenFromRequest(req) {
+  const header = req.headers.authorization || "";
+  const [scheme, token] = header.split(" ");
+  if (scheme === "Bearer" && token) return token;
+  return null;
+}
+
+async function userFromToken(token) {
+  let payload;
+  try {
+    payload = jwt.verify(token, secret());
+  } catch {
+    return null;
+  }
+  if (!payload?.sub || !ObjectId.isValid(payload.sub)) return null;
+  const user = await (await db())
+    .collection("users")
+    .findOne({ _id: new ObjectId(payload.sub) });
+  if (!user) return null;
+  return { id: user._id.toHexString(), name: user.name, email: user.email };
 }
 
 async function getUserFromRequest(req) {
-  const token = req.cookies?.[COOKIE];
+  const token = tokenFromRequest(req);
   if (!token) return null;
-  const database = await db();
-  const session = await database
-    .collection("sessions")
-    .findOne({ token, expiresAt: { $gt: new Date() } });
-  if (!session) return null;
-  const user = await database
-    .collection("users")
-    .findOne({ _id: session.userId });
-  if (!user) return null;
-  return { id: user._id.toHexString(), name: user.name, email: user.email };
+  return userFromToken(token).catch(() => null);
 }
 
 function requireUser(req, res, next) {
@@ -54,17 +54,4 @@ function requireUser(req, res, next) {
     .catch(next);
 }
 
-async function destroySession(req, res) {
-  const token = req.cookies?.[COOKIE];
-  if (token) {
-    try {
-      const database = await db();
-      await database.collection("sessions").deleteOne({ token });
-    } catch {
-      // ignore cleanup errors
-    }
-  }
-  res.clearCookie(COOKIE, { ...cookieOptions(), maxAge: undefined });
-}
-
-module.exports = { COOKIE, createSession, getUserFromRequest, requireUser, destroySession };
+module.exports = { signToken, getUserFromRequest, requireUser };
