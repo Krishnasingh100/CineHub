@@ -1,7 +1,0 @@
-import { ObjectId } from "mongodb";
-import { db } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ensureIndexes } from "@/lib/models";
-function id(value: string) { const number = Number(value); return Number.isSafeInteger(number) && number > 0 ? number : null; }
-export async function POST(_request: Request, context: RouteContext<"/api/watchlist/[movieId]">) { try { const movieId = id((await context.params).movieId); if (!movieId) return Response.json({ error: "Invalid movie." }, { status: 400 }); const user = await requireUser(); await ensureIndexes(); await (await db()).collection("watchlist").updateOne({ userId: new ObjectId(user.id), movieId }, { $setOnInsert: { userId: new ObjectId(user.id), movieId, createdAt: new Date() } }, { upsert: true }); return Response.json({ ok: true }); } catch (e) { return Response.json({ error: "Authentication required." }, { status: e instanceof Error && e.message === "UNAUTHORIZED" ? 401 : 500 }); } }
-export async function DELETE(_request: Request, context: RouteContext<"/api/watchlist/[movieId]">) { try { const movieId = id((await context.params).movieId); const user = await requireUser(); if (!movieId) return Response.json({ error: "Invalid movie." }, { status: 400 }); await (await db()).collection("watchlist").deleteOne({ userId: new ObjectId(user.id), movieId }); return Response.json({ ok: true }); } catch (e) { return Response.json({ error: "Authentication required." }, { status: e instanceof Error && e.message === "UNAUTHORIZED" ? 401 : 500 }); } }

@@ -1,5 +1,0 @@
-import { ObjectId } from "mongodb";
-import { db } from "@/lib/db";
-import { requireUser } from "@/lib/auth";
-import { ensureIndexes } from "@/lib/models";
-export async function PUT(request: Request, context: RouteContext<"/api/movies/[movieId]/rating">) { try { const movieId = Number((await context.params).movieId); const body = await request.json().catch(() => null) as { value?: number } | null; const value = body?.value; if (!Number.isSafeInteger(movieId) || typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 10) return Response.json({ error: "Rating must be an integer from 1 to 10." }, { status: 400 }); const user = await requireUser(); await ensureIndexes(); await (await db()).collection("ratings").updateOne({ userId: new ObjectId(user.id), movieId }, { $set: { value, updatedAt: new Date() }, $setOnInsert: { userId: new ObjectId(user.id), movieId, createdAt: new Date() } }, { upsert: true }); return Response.json({ ok: true }); } catch (e) { return Response.json({ error: "Authentication required." }, { status: e instanceof Error && e.message === "UNAUTHORIZED" ? 401 : 500 }); } }
