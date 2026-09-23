@@ -32,6 +32,10 @@ export function MovieDetail() {
   const backdrop = backdropUrl(movie.backdrop_path);
   const poster = posterUrl(movie.poster_path);
   const trailer = movie.videos?.results?.find((v) => v.site === "YouTube" && v.type === "Trailer");
+  const year = movie.release_date?.slice(0, 4);
+  const trailerUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+    `${movie.title}${year ? ` ${year}` : ""} official trailer`
+  )}`;
 
   return (
     <>
@@ -60,6 +64,14 @@ export function MovieDetail() {
                 )}
               </div>
               <MovieActions movieId={id} signedIn={signedIn} inWatchlist={inWatchlist} rating={rating} />
+              <a
+                href={trailerUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1 inline-block rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+              >
+                ▶ Watch trailer on YouTube
+              </a>
             </div>
           </div>
         </div>
@@ -97,7 +109,7 @@ export function MovieDetail() {
         </div>
         <aside>
           <SectionHeading title="Where to watch" />
-          <WhereToWatch data={providers?.results?.IN} />
+          <WhereToWatch data={providers?.results?.IN} title={movie.title} year={year} imdbId={movie.id} />
         </aside>
       </div>
     </>
