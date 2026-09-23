@@ -58,9 +58,9 @@ export function Home() {
   return (
     <>
       <HeroSection movie={hero} />
-      <div className="mx-auto max-w-7xl space-y-14 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl space-y-10 px-3 py-8 sm:space-y-14 sm:px-6 sm:py-12 lg:px-8">
         {sections.map((section) => (
-          <section key={section.title}>
+          <section key={section.title} className="min-w-0">
             <SectionHeading title={section.title} href={section.href} />
             <MovieGrid movies={section.movies.slice(0, 6)} />
           </section>

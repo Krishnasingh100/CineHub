@@ -31,15 +31,15 @@ export function Search() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <form onSubmit={onSubmit} className="mb-10 flex max-w-2xl gap-3">
+    <div className="mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-12 lg:px-8">
+      <form onSubmit={onSubmit} className="mb-8 flex flex-col gap-2 min-[400px]:flex-row min-[400px]:gap-3 sm:mb-10 max-w-2xl">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Search for a movie"
-          className="min-w-0 flex-1 rounded-lg border bg-zinc-900 px-4 py-3 outline-none focus:border-amber-500"
+          className="min-w-0 flex-1 rounded-lg border bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-amber-500 sm:text-base"
         />
-        <button className="rounded-lg bg-amber-400 px-5 font-bold text-black">Search</button>
+        <button className="shrink-0 rounded-lg bg-amber-400 px-5 py-3 text-sm font-bold text-black sm:text-base">Search</button>
       </form>
       {loading ? (
         <p className="text-zinc-400">Searching…</p>

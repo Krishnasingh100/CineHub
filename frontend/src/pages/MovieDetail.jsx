@@ -41,26 +41,26 @@ export function MovieDetail() {
     <>
       <section className="relative overflow-hidden border-b border-zinc-800">
         {backdrop && <img src={backdrop} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />}
-        <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-[220px_1fr]">
-          <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-zinc-800">
+        <div className="relative mx-auto grid max-w-7xl gap-6 px-3 py-8 sm:gap-8 sm:px-6 sm:py-12 md:grid-cols-[200px_1fr] lg:grid-cols-[220px_1fr] lg:px-8">
+          <div className="relative mx-auto aspect-[2/3] w-40 overflow-hidden rounded-xl bg-zinc-800 min-[400px]:w-48 sm:mx-0 sm:w-full xs:w-52 md:w-full">
             {poster && <img src={poster} alt={movie.title} className="h-full w-full object-cover" />}
           </div>
-          <div className="self-end">
-            <p className="text-amber-400">{movie.release_date?.slice(0, 4)} · {movie.runtime ?? "—"} min</p>
-            <h1 className="mt-2 text-4xl font-black sm:text-6xl">{movie.title}</h1>
-            <p className="mt-3 text-zinc-400">{movie.genres.map((g) => g.name).join(" · ")}</p>
-            <p className="mt-6 max-w-3xl leading-7 text-zinc-300">{movie.overview}</p>
-            <p className="mt-5 text-amber-400">★ {movie.vote_average.toFixed(1)} TMDB</p>
-            <div className="mt-5 space-y-4">
-              <div>
+          <div className="min-w-0 self-end text-center min-[400px]:text-left sm:text-left">
+            <p className="text-xs text-amber-400 sm:text-sm">{movie.release_date?.slice(0, 4)} · {movie.runtime ?? "—"} min</p>
+            <h1 className="fluid-title mt-2 font-black break-words">{movie.title}</h1>
+            <p className="mt-3 break-words text-xs text-zinc-400 sm:text-sm">{movie.genres.map((g) => g.name).join(" · ")}</p>
+            <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-zinc-300 min-[400px]:mx-0 sm:mx-0 sm:mt-6 sm:text-base sm:leading-7">{movie.overview}</p>
+            <p className="mt-4 text-sm text-amber-400 sm:mt-5 sm:text-base">★ {movie.vote_average.toFixed(1)} TMDB</p>
+            <div className="mt-5 flex flex-col items-center gap-4 min-[400px]:items-start space-y-0">
+              <div className="w-full min-[400px]:w-auto">
                 <p className="text-sm font-semibold text-zinc-200">Community Rating</p>
                 {community ? (
                   <>
-                    <p className="mt-1 text-2xl font-bold text-amber-400">{community.average.toFixed(1)} / 10</p>
-                    <p className="text-sm text-zinc-400">Based on {community.count} {community.count === 1 ? "rating" : "ratings"}</p>
+                    <p className="mt-1 text-xl font-bold text-amber-400 sm:text-2xl">{community.average.toFixed(1)} / 10</p>
+                    <p className="text-xs text-zinc-400 sm:text-sm">Based on {community.count} {community.count === 1 ? "rating" : "ratings"}</p>
                   </>
                 ) : (
-                  <p className="mt-1 text-sm text-zinc-400">No community ratings yet.</p>
+                  <p className="mt-1 text-xs text-zinc-400 sm:text-sm">No community ratings yet.</p>
                 )}
               </div>
               <MovieActions movieId={id} signedIn={signedIn} inWatchlist={inWatchlist} rating={rating} />
@@ -68,7 +68,7 @@ export function MovieDetail() {
                 href={trailerUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-1 inline-block rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500"
+                className="inline-block w-full rounded-full bg-red-600 px-4 py-2.5 text-center text-sm font-semibold text-white hover:bg-red-500 min-[400px]:w-auto"
               >
                 ▶ Watch trailer on YouTube
               </a>
@@ -76,10 +76,10 @@ export function MovieDetail() {
           </div>
         </div>
       </section>
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-12 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-12">
+      <div className="mx-auto grid max-w-7xl gap-8 px-3 py-8 sm:px-6 sm:py-12 lg:grid-cols-[1fr_360px] lg:gap-12 lg:px-8">
+        <div className="min-w-0 space-y-8 sm:space-y-12">
           {trailer && (
-            <section>
+            <section className="min-w-0">
               <SectionHeading title="Trailer" />
               <div className="aspect-video overflow-hidden rounded-xl border">
                 <iframe
@@ -93,21 +93,21 @@ export function MovieDetail() {
           )}
           <section>
             <SectionHeading title="Cast" />
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 min-[400px]:gap-4 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {movie.credits.cast.slice(0, 10).map((p) => (
-                <div key={p.id}>
-                  <p className="font-medium">{p.name}</p>
-                  <p className="text-sm text-zinc-500">{p.character}</p>
+                <div key={p.id} className="min-w-0">
+                  <p className="truncate text-sm font-medium sm:text-[15px]">{p.name}</p>
+                  <p className="truncate text-xs text-zinc-500 sm:text-sm">{p.character}</p>
                 </div>
               ))}
             </div>
           </section>
-          <section>
+          <section className="min-w-0">
             <SectionHeading title="Similar movies" />
             <MovieGrid movies={movie.similar.results.slice(0, 6)} />
           </section>
         </div>
-        <aside>
+        <aside className="min-w-0">
           <SectionHeading title="Where to watch" />
           <WhereToWatch data={providers?.results?.IN} title={movie.title} year={year} imdbId={movie.id} />
         </aside>

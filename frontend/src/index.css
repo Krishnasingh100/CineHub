@@ -1,16 +1,66 @@
 @import "tailwindcss";
 
+@theme {
+  --breakpoint-xs: 30rem; /* 480px — large phones / small phablets */
+  --breakpoint-2xs: 22.5rem; /* 360px — small phones */
+}
+
 :root {
   --background: #090909;
   --foreground: #f4f4f5;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
 }
 
-* { border-color: #27272a; }
+#root {
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+img, video, iframe {
+  max-width: 100%;
+}
+
+/* Fluid type that scales from 320px phones → tablets → desktop
+   without media-query jumps. Used by hero + detail titles. */
+.fluid-hero {
+  font-size: clamp(1.875rem, 1.35rem + 2.7vw, 3.75rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.fluid-title {
+  font-size: clamp(1.5rem, 1.15rem + 1.8vw, 2.5rem);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+/* Prevent long titles / urls from forcing horizontal scroll on 320px screens */
+* { border-color: #27272a; min-width: 0; }
 button, input, textarea, select { font: inherit; }
 ::selection { background: #a16207; color: white; }
+
+/* Comfortable tap targets on coarse pointers (phones / tablets) */
+@media (pointer: coarse) {
+  a, button { min-height: 44px; }
+  nav a, header a, header button { min-height: 0; }
+  form button, main button { min-height: 44px; }
+}
+
+/* Respect notches / gesture bars on modern phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  body { padding-bottom: env(safe-area-inset-bottom); }
+}

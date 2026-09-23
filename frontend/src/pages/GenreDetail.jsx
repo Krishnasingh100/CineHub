@@ -14,7 +14,7 @@ export function GenreDetail() {
   }, [id]);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-3 py-8 sm:px-6 sm:py-12 lg:px-8">
       <SectionHeading title={data?.genreName || "Genre"} />
       {!data ? (
         <LoadingSkeleton count={12} />

@@ -28,14 +28,15 @@ export function AuthForm({ mode }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-3 sm:space-y-4">
       {mode === "register" && (
         <input
           name="name"
           required
           maxLength={60}
           placeholder="Your name"
-          className="w-full rounded-lg border bg-zinc-900 px-4 py-3 outline-none focus:border-amber-500"
+          autoComplete="name"
+          className="w-full rounded-lg border bg-zinc-900 px-4 py-3 text-base outline-none focus:border-amber-500"
         />
       )}
       <input
@@ -43,7 +44,8 @@ export function AuthForm({ mode }) {
         type="email"
         required
         placeholder="Email address"
-        className="w-full rounded-lg border bg-zinc-900 px-4 py-3 outline-none focus:border-amber-500"
+        autoComplete="email"
+        className="w-full rounded-lg border bg-zinc-900 px-4 py-3 text-base outline-none focus:border-amber-500"
       />
       <input
         name="password"
@@ -51,10 +53,11 @@ export function AuthForm({ mode }) {
         required
         minLength={8}
         placeholder="Password (8+ characters)"
-        className="w-full rounded-lg border bg-zinc-900 px-4 py-3 outline-none focus:border-amber-500"
+        autoComplete={mode === "login" ? "current-password" : "new-password"}
+        className="w-full rounded-lg border bg-zinc-900 px-4 py-3 text-base outline-none focus:border-amber-500"
       />
       {error && <p className="text-sm text-red-400">{error}</p>}
-      <button disabled={loading} className="w-full rounded-lg bg-amber-400 py-3 font-bold text-black disabled:opacity-60">
+      <button disabled={loading} className="w-full rounded-lg bg-amber-400 py-3 text-sm font-bold text-black disabled:opacity-60 sm:text-base">
         {loading ? "Please wait…" : mode === "login" ? "Log in" : "Create account"}
       </button>
     </form>

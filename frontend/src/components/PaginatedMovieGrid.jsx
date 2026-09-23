@@ -30,11 +30,11 @@ export function PaginatedMovieGrid({ initialMovies, initialPage, totalPages, end
     <>
       <MovieGrid movies={movies} />
       {hasMore && (
-        <div className="mt-10 text-center">
+        <div className="mt-8 text-center sm:mt-10">
           <button
             onClick={loadMore}
             disabled={loading}
-            className="rounded-lg border border-amber-400/70 px-5 py-3 font-semibold text-amber-300 transition hover:bg-amber-400 hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-lg border border-amber-400/70 px-5 py-3 text-sm font-semibold text-amber-300 transition hover:bg-amber-400 hover:text-black disabled:cursor-not-allowed disabled:opacity-60 min-[400px]:w-auto sm:text-base"
           >
             {loading ? "Loading…" : "Load more"}
           </button>

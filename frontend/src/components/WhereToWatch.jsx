@@ -29,13 +29,13 @@ export function WhereToWatch({ data, title, year, imdbId }) {
   const hasProviders = data && (data.flatrate?.length || data.rent?.length || data.buy?.length);
   if (hasProviders) {
     return (
-      <div className="space-y-6 rounded-xl border bg-zinc-900/70 p-5">
+      <div className="space-y-5 rounded-xl border bg-zinc-900/70 p-4 sm:space-y-6 sm:p-5">
         <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">Availability in India</p>
         <Group title="Stream" providers={data.flatrate} />
         <Group title="Rent" providers={data.rent} />
         <Group title="Buy" providers={data.buy} />
         {data.link && (
-          <a href={data.link} target="_blank" rel="noreferrer" className="inline-block text-sm text-amber-400">
+          <a href={data.link} target="_blank" rel="noreferrer" className="inline-block rounded px-1 py-1 text-sm text-amber-400">
             View provider details ↗
           </a>
         )}
@@ -58,9 +58,9 @@ export function WhereToWatch({ data, title, year, imdbId }) {
   }
 
   return (
-    <div className="space-y-3 rounded-xl border bg-zinc-900/70 p-5">
+    <div className="space-y-3 rounded-xl border bg-zinc-900/70 p-4 sm:p-5">
       <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">Availability</p>
-      <p className="text-sm text-zinc-400">
+      <p className="text-xs text-zinc-400 sm:text-sm">
         Live streaming data isn&apos;t available for this title, but you can check these sources:
       </p>
       {links.map((l) => (
@@ -69,7 +69,7 @@ export function WhereToWatch({ data, title, year, imdbId }) {
           href={l.href}
           target="_blank"
           rel="noreferrer"
-          className="block rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-700"
+          className="block rounded-lg bg-zinc-800 px-4 py-2.5 text-sm font-semibold text-zinc-100 hover:bg-zinc-700"
         >
           {l.label} ↗
         </a>

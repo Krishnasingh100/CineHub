@@ -36,10 +36,10 @@ export function MovieActions({ movieId, signedIn, inWatchlist, rating }) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex w-full flex-col gap-3 min-[400px]:w-auto min-[400px]:flex-row min-[400px]:flex-wrap min-[400px]:items-end sm:items-center">
       <button
         onClick={watchlist}
-        className={`rounded-full border px-4 py-2 text-sm font-semibold ${
+        className={`w-full rounded-full border px-4 py-2.5 text-sm font-semibold min-[400px]:w-auto ${
           saved
             ? "border-red-500/60 bg-red-500/10 text-red-300"
             : "border-zinc-600 bg-zinc-900 text-zinc-100 hover:border-zinc-400"
@@ -47,14 +47,14 @@ export function MovieActions({ movieId, signedIn, inWatchlist, rating }) {
       >
         {saved ? "♥ In watchlist" : "♡ Add to watchlist"}
       </button>
-      <div>
+      <div className="w-full min-[400px]:w-auto">
         <p className="mb-1 text-sm font-semibold text-zinc-200">Your Rating</p>
         <div className="flex overflow-hidden rounded-full border border-zinc-700 bg-zinc-900">
           <select
             value={value}
             onChange={(e) => setValue(e.target.value)}
             aria-label="Your rating"
-            className="bg-transparent px-3 py-2 text-sm outline-none"
+            className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none min-[400px]:flex-none"
           >
             <option value="">Rate it</option>
             {Array.from({ length: 10 }, (_, i) => (
@@ -63,7 +63,7 @@ export function MovieActions({ movieId, signedIn, inWatchlist, rating }) {
               </option>
             ))}
           </select>
-          <button onClick={submitRating} className="border-l border-zinc-700 px-3 text-sm font-semibold text-amber-400">
+          <button onClick={submitRating} className="shrink-0 border-l border-zinc-700 px-4 text-sm font-semibold text-amber-400">
             {rating ? "Update" : "Save"}
           </button>
         </div>

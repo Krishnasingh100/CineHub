@@ -18,16 +18,16 @@ export function Profile() {
   if (!data) return <div className="mx-auto max-w-4xl px-4 py-12"><p className="text-zinc-400">Loading profile…</p></div>;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <p className="text-sm font-medium uppercase tracking-widest text-amber-400">Profile</p>
-      <h1 className="mt-2 text-4xl font-black">{data.user.name}</h1>
-      <p className="mt-2 text-zinc-400">{data.user.email}</p>
-      <div className="mt-8 grid grid-cols-3 gap-3">
-        <div className="rounded-xl border bg-zinc-900 p-4"><b className="text-2xl">{data.stats.watchlistCount}</b><p className="text-sm text-zinc-500">Saved movies</p></div>
-        <div className="rounded-xl border bg-zinc-900 p-4"><b className="text-2xl">{data.stats.ratingCount}</b><p className="text-sm text-zinc-500">Ratings</p></div>
-        <div className="rounded-xl border bg-zinc-900 p-4"><b className="text-2xl">{data.stats.reviewCount}</b><p className="text-sm text-zinc-500">Reviews</p></div>
+    <div className="mx-auto max-w-4xl px-3 py-8 sm:px-6 sm:py-12">
+      <p className="text-xs font-medium uppercase tracking-widest text-amber-400 sm:text-sm">Profile</p>
+      <h1 className="mt-2 break-words text-2xl font-black sm:text-4xl">{data.user.name}</h1>
+      <p className="mt-2 break-all text-sm text-zinc-400 sm:text-base">{data.user.email}</p>
+      <div className="mt-6 grid grid-cols-1 gap-2 min-[400px]:grid-cols-3 min-[400px]:gap-3 sm:mt-8">
+        <div className="rounded-xl border bg-zinc-900 p-3 sm:p-4"><b className="text-xl sm:text-2xl">{data.stats.watchlistCount}</b><p className="text-xs text-zinc-500 sm:text-sm">Saved movies</p></div>
+        <div className="rounded-xl border bg-zinc-900 p-3 sm:p-4"><b className="text-xl sm:text-2xl">{data.stats.ratingCount}</b><p className="text-xs text-zinc-500 sm:text-sm">Ratings</p></div>
+        <div className="rounded-xl border bg-zinc-900 p-3 sm:p-4"><b className="text-xl sm:text-2xl">{data.stats.reviewCount}</b><p className="text-xs text-zinc-500 sm:text-sm">Reviews</p></div>
       </div>
-      <section className="mt-12">
+      <section className="mt-8 sm:mt-12">
         <SectionHeading title="Recent ratings" />
         {data.recentRatings.length ? (
           <div className="space-y-3">
@@ -37,24 +37,24 @@ export function Profile() {
                 <Link
                   key={rating.movieId}
                   to={`/movies/${rating.movieId}`}
-                  className="flex items-center gap-4 rounded-lg border bg-zinc-900 p-3 transition hover:border-amber-500"
+                  className="flex items-center gap-3 rounded-lg border bg-zinc-900 p-2.5 transition hover:border-amber-500 sm:gap-4 sm:p-3"
                 >
-                  <div className="relative h-20 w-14 shrink-0 overflow-hidden rounded bg-zinc-800">
+                  <div className="relative h-16 w-11 shrink-0 overflow-hidden rounded bg-zinc-800 sm:h-20 sm:w-14">
                     {poster ? (
                       <img src={poster} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <div className="grid h-full place-items-center text-center text-xs text-zinc-500">No poster</div>
+                      <div className="grid h-full place-items-center text-center text-[10px] text-zinc-500 sm:text-xs">No poster</div>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold text-zinc-100">{movie?.title ?? `Movie #${rating.movieId}`}</p>
-                    <p className="mt-1 text-sm text-zinc-500">
+                    <p className="truncate text-sm font-semibold text-zinc-100 sm:text-base">{movie?.title ?? `Movie #${rating.movieId}`}</p>
+                    <p className="mt-1 truncate text-xs text-zinc-500 sm:text-sm">
                       {rating.updatedAt || rating.createdAt
                         ? `Rated ${new Date(rating.updatedAt || rating.createdAt).toLocaleDateString()}`
                         : "Rated recently"}
                     </p>
                   </div>
-                  <span className="shrink-0 text-amber-400">★ {rating.value}/10</span>
+                  <span className="shrink-0 text-xs text-amber-400 sm:text-sm">★ {rating.value}/10</span>
                 </Link>
               );
             })}
